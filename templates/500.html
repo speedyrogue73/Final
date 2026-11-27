@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}خطای سرور (۵۰۰) | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="surface-card p-4 p-lg-5 text-center">
+        <div class="display-1 fw-bold mb-2 text-warning">۵۰۰</div>
+        <h1 class="h3 fw-bold mb-3">خطایی در سرور رخ داد</h1>
+        <p class="text-muted mb-4">
+          متأسفانه در پردازش درخواست شما مشکلی پیش آمد. لطفاً چند لحظه دیگر دوباره تلاش کنید.
+        </p>
+        <a href="{% url 'books:home' %}" class="btn btn-ketabino px-4">بازگشت به صفحه اصلی</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

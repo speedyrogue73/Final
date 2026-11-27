@@ -1,0 +1,46 @@
+<div class="book-card">
+  <div class="book-cover-wrapper">
+    <a href="{{ book.get_absolute_url }}">
+      {% if book.cover %}
+        <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="book-cover-img">
+      {% else %}
+        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+          <i class="bi bi-book fs-1"></i>
+        </div>
+      {% endif %}
+    </a>
+    <span class="book-rating-badge">
+      <i class="bi bi-star-fill ms-1"></i>{{ book.rating }}
+    </span>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'books:toggle_favorite' book.pk %}" class="js-favorite-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button
+          type="submit"
+          class="book-fav-btn {% if book.pk in user_favorite_ids %}is-favorite{% endif %}"
+          title="{% if book.pk in user_favorite_ids %}حذف از علاقه‌مندی‌ها{% else %}افزودن به علاقه‌مندی‌ها{% endif %}"
+        >
+          <i class="bi {% if book.pk in user_favorite_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+        </button>
+      </form>
+    {% endif %}
+  </div>
+  <div class="p-3 d-flex flex-column flex-grow-1">
+    <div class="mb-2">
+      <a href="{% url 'books:book_list' %}?category={{ book.category.slug }}" class="book-category-pill">
+        {{ book.category.name }}
+      </a>
+    </div>
+    <a href="{{ book.get_absolute_url }}" class="text-decoration-none">
+      <h3 class="book-card-title">{{ book.title }}</h3>
+    </a>
+    <p class="book-card-author mb-3">{{ book.author }}</p>
+    <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top border-light-subtle">
+      <span class="small text-muted">{{ book.publication_year }}</span>
+      <a href="{{ book.get_absolute_url }}" class="small fw-semibold">
+        مشاهده جزئیات <i class="bi bi-arrow-left-short"></i>
+      </a>
+    </div>
+  </div>
+</div>

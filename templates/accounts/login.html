@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}ورود | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-5">
+      <div class="surface-card p-4 p-lg-5">
+        <div class="text-center mb-4">
+          <span class="brand-icon mb-3"><i class="bi bi-box-arrow-in-left"></i></span>
+          <h1 class="h3 fw-bold">ورود به حساب کاربری</h1>
+          <p class="text-muted small">برای مدیریت کتاب‌های موردعلاقه خود وارد شوید</p>
+        </div>
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger small">{{ form.non_field_errors|striptags }}</div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">{{ form.username.label }}</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">{{ form.password.label }}</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              {{ form.remember_me }}
+              <label class="form-check-label small" for="{{ form.remember_me.id_for_label }}">
+                {{ form.remember_me.label }}
+              </label>
+            </div>
+            <a href="{% url 'accounts:password_reset' %}" class="small">فراموشی رمز عبور؟</a>
+          </div>
+
+          <button type="submit" class="btn btn-ketabino w-100 py-2">ورود</button>
+        </form>
+
+        <div class="text-center mt-4 small">
+          حساب کاربری ندارید؟
+          <a href="{% url 'accounts:register' %}" class="fw-bold">ثبت‌نام کنید</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

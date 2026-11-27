@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}تماس با ما | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-lg-5">
+      <div class="surface-card p-4 p-lg-5 h-100" style="background: linear-gradient(145deg, #3B2618, #573824); color: #FAF6F0;">
+        <h1 class="h3 fw-bold mb-3">تماس با Bookeat</h1>
+        <p class="opacity-75 mb-4">
+          اگر کتابی را برای معرفی پیشنهاد می‌دهید، سوالی دارید یا بازخوردی درباره وب‌سایت دارید، خوشحال می‌شویم پیام شما را دریافت کنیم.
+        </p>
+        <div class="d-flex flex-column gap-3 small">
+          <div class="d-flex align-items-center gap-3">
+            <span class="brand-icon"><i class="bi bi-envelope"></i></span>
+            <div>
+              <div class="opacity-75">ایمیل پشتیبانی</div>
+              <div class="fw-bold" dir="ltr">info@bookeat.ir</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="brand-icon"><i class="bi bi-geo-alt"></i></span>
+            <div>
+              <div class="opacity-75">نشانی</div>
+              <div class="fw-bold">تهران، خیابان انقلاب، پلاک ۱۲</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="brand-icon"><i class="bi bi-clock"></i></span>
+            <div>
+              <div class="opacity-75">ساعات پاسخگویی</div>
+              <div class="fw-bold">شنبه تا چهارشنبه، ۹ تا ۱۷</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="surface-card p-4 p-lg-5">
+        <h2 class="h4 fw-bold mb-4">ارسال پیام</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="row g-3">
+            {% for field in form %}
+              <div class="{% if field.name == 'name' or field.name == 'email' %}col-md-6{% else %}col-12{% endif %}">
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+          <button type="submit" class="btn btn-ketabino px-5 mt-4">
+            <i class="bi bi-send ms-2"></i>ارسال پیام
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

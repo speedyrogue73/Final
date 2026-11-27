@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}خطای امنیتی (۴۰۳) | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="surface-card p-4 p-lg-5 text-center">
+        <div class="category-icon mb-3" style="width: 72px; height: 72px; font-size: 2rem; background-color: #FDECEA; color: #C0392B;">
+          <i class="bi bi-shield-exclamation"></i>
+        </div>
+        <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2 mb-3 fw-semibold">خطای ۴۰۳ — نشست امنیتی</span>
+        <h1 class="h3 fw-bold mb-3">توکن امنیتی صفحه منقضی شده است</h1>
+        <p class="text-muted mb-4">
+          احتمالاً پس از ورود یا خروج از حساب کاربری در تب دیگر، از دکمه بازگشت مرورگر استفاده کرده‌اید یا صفحه بیش از حد باز مانده است. لطفاً صفحه را مجدداً بارگذاری کنید و دوباره تلاش نمایید.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <button type="button" onclick="window.location.href=window.location.pathname;" class="btn btn-ketabino px-4">
+            <i class="bi bi-arrow-clockwise ms-1"></i>بارگذاری مجدد صفحه
+          </button>
+          <a href="{% url 'books:home' %}" class="btn btn-ketabino-outline px-4">
+            بازگشت به صفحه اصلی
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

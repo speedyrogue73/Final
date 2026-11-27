@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'books:home' %}">صفحه اصلی</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'books:book_list' %}">کتاب‌ها</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'books:book_list' %}?category={{ book.category.slug }}">{{ book.category.name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="surface-card p-4 p-lg-5 mb-5">
+    <div class="row g-5 align-items-start">
+      <div class="col-md-5 col-lg-4">
+        <div class="rounded-4 overflow-hidden shadow-sm border bg-light">
+          {% if book.cover %}
+            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid w-100">
+          {% else %}
+            <div class="py-5 text-center text-muted">
+              <i class="bi bi-book display-1"></i>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-md-7 col-lg-8">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <a href="{% url 'books:book_list' %}?category={{ book.category.slug }}" class="book-category-pill fs-6 px-3 py-1">
+            {{ book.category.name }}
+          </a>
+          {% if book.is_book_of_week %}
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+              <i class="bi bi-award-fill ms-1"></i>پیشنهاد هفته
+            </span>
+          {% endif %}
+        </div>
+
+        <h1 class="fw-bold mb-2">{{ book.title }}</h1>
+        <p class="fs-5 text-muted mb-4">نویسنده: <strong class="text-dark">{{ book.author }}</strong></p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-sm-4">
+            <div class="p-3 rounded-3 border bg-light">
+              <div class="small text-muted mb-1">امتیاز کاربران</div>
+              <div class="fw-bold fs-5 text-warning">
+                <i class="bi bi-star-fill ms-1"></i>{{ book.rating }} <span class="fs-6 text-muted">/ ۵</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-4">
+            <div class="p-3 rounded-3 border bg-light">
+              <div class="small text-muted mb-1">سال انتشار</div>
+              <div class="fw-bold fs-5">{{ book.publication_year }}</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-4">
+            <div class="p-3 rounded-3 border bg-light">
+              <div class="small text-muted mb-1">ژانر و دسته‌بندی</div>
+              <div class="fw-bold fs-6">{{ book.category.name }}</div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="h5 fw-bold mb-2">معرفی و توضیحات کتاب</h2>
+        <p class="text-secondary mb-4" style="white-space: pre-line;">{{ book.description }}</p>
+
+        <div class="d-flex flex-wrap gap-3">
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'books:toggle_favorite' book.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              {% if is_favorite %}
+                <button type="submit" class="btn btn-outline-danger px-4 py-2 rounded-3 fw-semibold">
+                  <i class="bi bi-heart-fill ms-2"></i>حذف از علاقه‌مندی‌ها
+                </button>
+              {% else %}
+                <button type="submit" class="btn btn-ketabino px-4 py-2">
+                  <i class="bi bi-heart ms-2"></i>افزودن به علاقه‌مندی‌ها
+                </button>
+              {% endif %}
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-ketabino px-4 py-2">
+              <i class="bi bi-heart ms-2"></i>برای افزودن به علاقه‌مندی‌ها وارد شوید
+            </a>
+          {% endif %}
+          <a href="{% url 'books:book_list' %}" class="btn btn-ketabino-outline px-4 py-2">
+            بازگشت به فهرست کتاب‌ها
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="surface-card p-4 p-lg-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-heading h4 mb-0">
+        نظرات کاربران
+        <span class="badge bg-light text-dark border rounded-pill fs-6 ms-2">{{ reviews|length }}</span>
+      </h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="p-4 rounded-4 border bg-light">
+          <h3 class="h5 fw-bold mb-3">ثبت دیدگاه شما</h3>
+          {% if user.is_authenticated %}
+            <form method="post" action="{{ book.get_absolute_url }}#reviews" novalidate>
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="{{ review_form.rating.id_for_label }}" class="form-label fw-semibold">{{ review_form.rating.label }}</label>
+                {{ review_form.rating }}
+                {% if review_form.rating.errors %}
+                  <div class="text-danger small mt-1">{{ review_form.rating.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                <label for="{{ review_form.comment.id_for_label }}" class="form-label fw-semibold">{{ review_form.comment.label }}</label>
+                {{ review_form.comment }}
+                {% if review_form.comment.errors %}
+                  <div class="text-danger small mt-1">{{ review_form.comment.errors|striptags }}</div>
+                {% endif %}
+              </div>
+              <button type="submit" class="btn btn-ketabino w-100">
+                <i class="bi bi-chat-square-text ms-1"></i>ارسال نظر
+              </button>
+            </form>
+          {% else %}
+            <p class="text-muted small mb-3">برای ثبت نظر درباره این کتاب، ابتدا وارد حساب کاربری خود شوید.</p>
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}#reviews" class="btn btn-ketabino w-100">
+              ورود برای ثبت نظر
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        {% if reviews %}
+          <div class="d-flex flex-column gap-3">
+            {% for review in reviews %}
+              <div id="review-{{ review.pk }}" class="p-3 p-md-4 rounded-4 border bg-white">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="brand-icon" style="width: 34px; height: 34px; font-size: 0.95rem;">
+                      <i class="bi bi-person-fill"></i>
+                    </span>
+                    <div>
+                      <div class="fw-bold small">{{ review.user.get_full_name|default:review.user.username }}</div>
+                      <div class="text-muted" style="font-size: 0.78rem;">{{ review.created_at|date:"Y/m/d - H:i" }}</div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    {% if review.rating %}
+                      <span class="badge bg-warning text-dark rounded-pill px-2 py-1">
+                        <i class="bi bi-star-fill ms-1"></i>{{ review.rating }} از ۵
+                      </span>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary rounded-3 py-0 px-2"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#reply-form-{{ review.pk }}"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-reply ms-1"></i>پاسخ
+                      </button>
+                    {% endif %}
+                    {% if user.is_authenticated and review.user == user %}
+                      <form method="post" action="{% url 'books:delete_review' review.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-3 py-0 px-2" title="حذف نظر">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+                <p class="text-secondary mb-0 small" style="white-space: pre-line;">{{ review.comment }}</p>
+
+                {% if user.is_authenticated %}
+                  <div class="collapse mt-3" id="reply-form-{{ review.pk }}">
+                    <form method="post" action="{{ book.get_absolute_url }}" class="p-3 rounded-3 bg-light border">
+                      {% csrf_token %}
+                      <input type="hidden" name="parent_id" value="{{ review.pk }}">
+                      <div class="mb-2">
+                        {{ reply_form.comment }}
+                      </div>
+                      <button type="submit" class="btn btn-sm btn-ketabino">ارسال پاسخ</button>
+                    </form>
+                  </div>
+                {% endif %}
+
+                {% if review.replies.all %}
+                  <div class="mt-3 pe-3 border-end border-2 border-warning-subtle d-flex flex-column gap-2">
+                    {% for reply in review.replies.all %}
+                      <div class="p-2 p-md-3 rounded-3 bg-light border">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <div class="fw-bold small">
+                            <i class="bi bi-reply-fill text-warning ms-1"></i>{{ reply.user.get_full_name|default:reply.user.username }}
+                            <span class="text-muted fw-normal me-2" style="font-size: 0.75rem;">{{ reply.created_at|date:"Y/m/d - H:i" }}</span>
+                          </div>
+                          {% if user.is_authenticated and reply.user == user %}
+                            <form method="post" action="{% url 'books:delete_review' reply.pk %}" class="d-inline">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="حذف پاسخ">
+                                <i class="bi bi-trash small"></i>
+                              </button>
+                            </form>
+                          {% endif %}
+                        </div>
+                        <p class="text-secondary mb-0 small" style="white-space: pre-line;">{{ reply.comment }}</p>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-5 border rounded-4 bg-light">
+            <i class="bi bi-chat-left-dots fs-1 text-muted mb-2 d-block"></i>
+            <p class="text-muted mb-0">هنوز نظری برای این کتاب ثبت نشده است. اولین نفری باشید که دیدگاه خود را می‌نویسد!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if related_books %}
+    <section>
+      <h2 class="section-heading h4 mb-4">کتاب‌های مشابه در دسته‌بندی {{ book.category.name }}</h2>
+      <div class="row g-4">
+        {% for item in related_books %}
+          <div class="col-12 col-sm-6 col-lg-3">
+            {% include 'includes/book_card.html' with book=item %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

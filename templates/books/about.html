@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}درباره ما | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="surface-card p-4 p-lg-5 mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <span class="hero-badge"><i class="bi bi-book"></i>درباره Bookeat</span>
+        <h1 class="fw-bold mb-3">همراه شما در کشف کتاب‌های ماندگار</h1>
+        <p class="text-secondary fs-5 mb-3">
+          <strong>Bookeat</strong> یک پلتفرم فارسی برای معرفی، بررسی و دسته‌بندی کتاب‌های ارزشمند ایرانی و خارجی است. هدف ما ایجاد فضایی آرام، منظم و الهام‌بخش است تا علاقه‌مندان به مطالعه بتوانند به‌راحتی کتاب بعدی خود را انتخاب کنند.
+        </p>
+        <p class="text-muted mb-0">
+          در Bookeat می‌توانید بر اساس نام کتاب، نویسنده یا دسته‌بندی موضوعی جست‌وجو کنید، جزئیات و امتیاز کتاب‌ها را بخوانید و با ساخت حساب کاربری، فهرست کتاب‌های موردعلاقه خود را همیشه در دسترس داشته باشید.
+        </p>
+      </div>
+      <div class="col-lg-4">
+        <div class="p-4 rounded-4 text-center" style="background-color: var(--bg-warm);">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="p-3 bg-white rounded-3 border">
+                <div class="h3 fw-bold text-warning mb-0">{{ books_count }}</div>
+                <div class="small text-muted">کتاب معرفی‌شده</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <div class="h4 fw-bold text-primary mb-0">{{ categories_count }}</div>
+                <div class="small text-muted">دسته‌بندی</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <div class="h4 fw-bold text-success mb-0">{{ users_count }}</div>
+                <div class="small text-muted">کاربر عضو</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="surface-card p-4 h-100">
+        <div class="category-icon mx-0 mb-3"><i class="bi bi-compass"></i></div>
+        <h3 class="h5 fw-bold">کشف هوشمند</h3>
+        <p class="text-muted small mb-0">نمایش کتاب‌های محبوب، جدیدترین آثار و پیشنهاد ویژه هفته برای انتخاب سریع‌تر.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="surface-card p-4 h-100">
+        <div class="category-icon mx-0 mb-3"><i class="bi bi-heart"></i></div>
+        <h3 class="h5 fw-bold">قفسه شخصی</h3>
+        <p class="text-muted small mb-0">هر کاربر پنل اختصاصی خود را دارد و می‌تواند کتاب‌های موردعلاقه‌اش را ذخیره و مدیریت کند.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="surface-card p-4 h-100">
+        <div class="category-icon mx-0 mb-3"><i class="bi bi-chat-dots"></i></div>
+        <h3 class="h5 fw-bold">ارتباط مستقیم</h3>
+        <p class="text-muted small mb-0">پیشنهادهای کتاب یا دیدگاه‌های خود را از طریق فرم تماس با ما برای تیم Bookeat ارسال کنید.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

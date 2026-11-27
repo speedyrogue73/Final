@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}پنل کاربری | Bookeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row g-4">
+    <!-- User Profile & Edit -->
+    <div class="col-lg-4">
+      <div class="surface-card p-4 mb-4">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+          <div class="brand-icon" style="width: 54px; height: 54px; font-size: 1.6rem;">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div>
+            <h1 class="h5 fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h1>
+            <div class="small text-muted">@{{ user.username }}</div>
+          </div>
+        </div>
+
+        <div class="small text-muted mb-4">
+          <div class="mb-2"><i class="bi bi-envelope ms-2"></i>{{ user.email|default:'ایمیل ثبت نشده' }}</div>
+          <div><i class="bi bi-heart-fill text-danger ms-2"></i>{{ favorites|length }} کتاب در علاقه‌مندی‌ها</div>
+        </div>
+
+        <h2 class="h6 fw-bold mb-3">ویرایش اطلاعات پروفایل</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label small fw-semibold">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-ketabino w-100 mb-3">ذخیره تغییرات</button>
+        </form>
+
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger w-100 rounded-3">
+            <i class="bi bi-box-arrow-left ms-1"></i>خروج از حساب کاربری
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Favorite Books -->
+    <div class="col-lg-8">
+      <div class="surface-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="h4 fw-bold mb-0">کتاب‌های موردعلاقه من</h2>
+          <a href="{% url 'books:book_list' %}" class="btn btn-sm btn-ketabino-outline">افزودن کتاب جدید</a>
+        </div>
+
+        {% if favorites %}
+          <div class="row g-3">
+            {% for fav in favorites %}
+              <div class="col-md-6">
+                <div class="border rounded-4 p-3 h-100 d-flex gap-3 align-items-center bg-light">
+                  <a href="{{ fav.book.get_absolute_url }}" class="flex-shrink-0">
+                    {% if fav.book.cover %}
+                      <img src="{{ fav.book.cover.url }}" alt="{{ fav.book.title }}" class="rounded-3" style="width: 72px; height: 100px; object-fit: cover;">
+                    {% else %}
+                      <div class="bg-white rounded-3 d-flex align-items-center justify-content-center" style="width: 72px; height: 100px;">
+                        <i class="bi bi-book fs-3 text-muted"></i>
+                      </div>
+                    {% endif %}
+                  </a>
+                  <div class="flex-grow-1 min-w-0">
+                    <span class="book-category-pill mb-1">{{ fav.book.category.name }}</span>
+                    <a href="{{ fav.book.get_absolute_url }}" class="d-block fw-bold text-dark text-truncate">
+                      {{ fav.book.title }}
+                    </a>
+                    <div class="small text-muted mb-2">{{ fav.book.author }}</div>
+                    <form method="post" action="{% url 'dashboard:remove_favorite' fav.pk %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-outline-danger rounded-3">
+                        <i class="bi bi-trash ms-1"></i>حذف
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="bi bi-bookmark-heart display-4 text-muted mb-3 d-block"></i>
+            <h3 class="h5 fw-bold">هنوز کتابی به علاقه‌مندی‌ها اضافه نکرده‌اید</h3>
+            <p class="text-muted small mb-3">کتاب‌های دلخواهتان را در کتابخانه پیدا کنید و دکمه قلب را بزنید.</p>
+            <a href="{% url 'books:book_list' %}" class="btn btn-ketabino">مشاهده همه کتاب‌ها</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
